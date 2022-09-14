@@ -1,34 +1,42 @@
 package hiber;
 
 import hiber.config.AppConfig;
+import hiber.model.Car;
 import hiber.model.User;
 import hiber.service.UserService;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import java.sql.SQLException;
-import java.util.List;
 
 public class MainApp {
-   public static void main(String[] args) throws SQLException {
-      AnnotationConfigApplicationContext context = 
-            new AnnotationConfigApplicationContext(AppConfig.class);
+    public static void main(String[] args) throws SQLException {
+        AnnotationConfigApplicationContext context =
+                new AnnotationConfigApplicationContext(AppConfig.class);
 
-      UserService userService = context.getBean(UserService.class);
+        UserService userService = context.getBean(UserService.class);
 
-      userService.add(new User("User1", "Lastname1", "user1@mail.ru"));
-      userService.add(new User("User2", "Lastname2", "user2@mail.ru"));
-      userService.add(new User("User3", "Lastname3", "user3@mail.ru"));
-      userService.add(new User("User4", "Lastname4", "user4@mail.ru"));
+        User user1 = new User("Lionel", "Messi", "messi@mail.ru", new Car(10, "Audi A5"));
+        User user2 = new User("Roberto", "Carlos", "carlos@mail.ru", new Car(5, "BMW X5"));
+        User user3 = new User("Cristiano", "Ronaldo", "ronaldo@mai.ru", new Car(7, "Toyota Corolla"));
+        User user4 = new User("Eden", "Azar", "azar@mail.ru", new Car(15, "Lotus Eclipse"));
 
-      List<User> users = userService.listUsers();
-      for (User user : users) {
-         System.out.println("Id = "+user.getId());
-         System.out.println("First Name = "+user.getFirstName());
-         System.out.println("Last Name = "+user.getLastName());
-         System.out.println("Email = "+user.getEmail());
-         System.out.println();
-      }
+        userService.add(user1);
+        userService.add(user2);
+        userService.add(user3);
+        userService.add(user4);
 
-      context.close();
-   }
+        System.out.println(userService.getUserBySerialAndModel(15,"Lotus Eclipse"));
+
+        for (User user : userService.listUsers()) {
+            System.out.println(("Id = " + user.getId() + ";") +
+                    (" First Name = " + user.getFirstName() + ";") +
+                    (" Last Name = " + user.getLastName() + ";") +
+                    (" Email = " + user.getEmail() + ";") +
+                    (" Id = " + user.getCar().getId() + ";") +
+                    (" Series = " + user.getCar().getSeries() + ";") +
+                    (" Model = " + user.getCar().getModel()));
+        }
+
+        context.close();
+    }
 }
